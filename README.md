@@ -5,7 +5,8 @@ I forked this repo because it was the only substack scraping tool I could find t
 
 ### TODO
 
-- [ ] Traverse pagination on posts list so the tool can download more than the most recent 23 posts
+- [x] Traverse pagination on posts list so the tool can download more than the most recent 23 posts
+- [ ] Download images instead of hotlinking in archive
 - [ ] Verify that the cookie strategy for downloading premium posts still works
 - [ ] Option to work with custom domain names (formats other than blogname.substack.com)
 - [ ] Handle downloading podcast episodes
