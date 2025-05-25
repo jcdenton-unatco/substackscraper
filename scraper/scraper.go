@@ -184,10 +184,11 @@ func (app *appEnv) fetchJSON(url string, data interface{}) error {
 // fetch all archived posts after app.since
 func (app *appEnv) fetchArchive() (archiveApiResponse, error) {
 	offset := 0
+	limit := 12
 	var results archiveApiResponse
 	for {
 		var ar archiveApiResponse
-		err := app.fetchJSON(buildUrl(app.pubName, fmt.Sprintf("archive?offset=%d&limit=%d", offset, 50)), &ar)
+		err := app.fetchJSON(buildUrl(app.pubName, fmt.Sprintf("archive?offset=%d&limit=%d", offset, limit)), &ar)
 		if err != nil {
 			return nil, err
 		}
@@ -196,11 +197,17 @@ func (app *appEnv) fetchArchive() (archiveApiResponse, error) {
 				results = append(results, a)
 			}
 		}
-		if len(ar) < 50 || ar[49].PostDate.Before(app.since) {
-			// we're done, there's nothing left
+		// Check if we've reached the end or if all remaining posts are before our date threshold
+		if len(ar) < limit {
+			// This is the last page
 			break
 		}
-		offset += 50
+		// Check if the last post in this batch is before our date threshold
+		if len(ar) > 0 && ar[len(ar)-1].PostDate.Before(app.since) {
+			// All remaining posts will be before our threshold, so we can stop
+			break
+		}
+		offset += limit
 
 		// wait on rate limiter
 		time.Sleep(1 * time.Second)
