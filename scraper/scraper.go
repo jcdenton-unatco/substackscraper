@@ -184,7 +184,7 @@ func (app *appEnv) fetchJSON(url string, data interface{}) error {
 // fetch all archived posts after app.since
 func (app *appEnv) fetchArchive() (archiveApiResponse, error) {
 	offset := 0
-	limit := 12 // Maximum page size for new API
+	limit := 12
 	var results archiveApiResponse
 	for {
 		var ar archiveApiResponse
